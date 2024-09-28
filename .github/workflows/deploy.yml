@@ -1,34 +1,11 @@
-name: Deploy Node.js App
-
-on:
-  push:
-    branches:
-      - main  # Cambia esto si tu rama principal es diferente
-
+on: push
 jobs:
-  deploy:
+  build-node:
     runs-on: ubuntu-latest
-
+    container: node:16
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'  # Cambia esto según tu versión de Node.js
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Deploy to Server
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          HOST: ${{ secrets.HOST }}
-          USER: ${{ secrets.USER }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
-          ssh $USER@$HOST "cd C:\app-city-git-actions && git pull origin main && npm install && pm2 restart mi-aplicacion"
+      - run: node --version
+      - run: node --version
+      - uses: actions/checkout
+      - run: npm install
+      - run: node app.js
