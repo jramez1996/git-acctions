@@ -1,10 +1,30 @@
-on: push
+name: Deploy to Local Server
+
+on:
+  push:
+    branches:
+      - main  # O la rama que desees
+
 jobs:
-  example:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use another action
-        uses: owner/repo@ref
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
+            cd /ruta/a/tu/proyecto || exit 1
+            git pull origin main  # Cambia a la rama que necesites
+            # Comandos adicionales para reiniciar servicios o construir la app
+            npm install && npm run build  # Ejemplo para una app Node.js
+            # o
+            docker-compose up -d  # Si usas Docker
+          EOF
