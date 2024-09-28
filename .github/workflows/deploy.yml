@@ -1,11 +1,10 @@
 on: push
 jobs:
-  build-node:
+  example:
     runs-on: ubuntu-latest
-    container: node:16
     steps:
-      - run: node --version
-      - run: node --version
-      - uses: actions/checkout
-      - run: npm install
-      - run: node app.js
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Use another action
+        uses: owner/repo@ref
